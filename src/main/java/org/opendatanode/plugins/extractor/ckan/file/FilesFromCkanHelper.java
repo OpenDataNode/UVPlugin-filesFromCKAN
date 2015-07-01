@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -10,7 +10,7 @@
 		<relativePath></relativePath>
 	</parent>
 	
-	<groupId>eu.unifiedviews.plugins</groupId>
+	<groupId>org.opendatanode.plugins</groupId>
 	<artifactId>uv-e-filesFromCKAN</artifactId>
 	
 	<name>E-FilesFromCKAN</name>
@@ -27,7 +27,7 @@
 	</repositories>
 
 	<properties>
-		<dpu.package>eu.unifiedviews.plugins.extractor.ckan.file</dpu.package>
+		<dpu.package>org.opendatanode.plugins.extractor.ckan.file</dpu.package>
 		<dpu.mainClass>FilesFromCkan</dpu.mainClass>
 	</properties>
 
