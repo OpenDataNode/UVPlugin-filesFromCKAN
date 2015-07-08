@@ -77,11 +77,15 @@ public class FilesFromCkanHelper {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         FileOutputStream fos = null;
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
         
         try {
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
             uriBuilder.setPath(uriBuilder.getPath());
             HttpPost httpPost = new HttpPost(uriBuilder.build().normalize());
+            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
+                httpPost.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
+            }
             httpPost.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
             
             HttpEntity entity = MultipartEntityBuilder.create()
@@ -116,17 +120,21 @@ public class FilesFromCkanHelper {
         return datasetsList;
     }
     
-    public static List<Dataset> getPackageListWithResources(String ckanApiUrl) throws Exception {
+    public static List<Dataset> getPackageListWithResources(CatalogApiConfig apiConfig, String ckanApiUrl) throws Exception {
         List<Dataset> datasetsList = new ArrayList<Dataset>();
         
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
         
         try {
             
             URIBuilder uriBuilder = new URIBuilder(ckanApiUrl + API_ACTION_PACKAGES_WITH_RESOURCES);
             uriBuilder.setPath(uriBuilder.getPath());
             HttpGet httpGet = new HttpGet(uriBuilder.build().normalize());
+            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
+                httpGet.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
+            }
             httpGet.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
             
             response = client.execute(httpGet);
@@ -168,12 +176,16 @@ public class FilesFromCkanHelper {
     public static Organization getOrganization(CatalogApiConfig apiConfig, String orgId) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
         
         try {
             
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
             uriBuilder.setPath(uriBuilder.getPath());
             HttpPost httpPost = new HttpPost(uriBuilder.build().normalize());
+            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
+                httpPost.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
+            }
             httpPost.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
             
             Map<String, Object> values = new HashMap<String, Object>(2);
@@ -216,12 +228,16 @@ public class FilesFromCkanHelper {
     public static Dataset getDataset(CatalogApiConfig apiConfig, String datasetIdOrName) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
         
         try {
             
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
             uriBuilder.setPath(uriBuilder.getPath());
             HttpPost httpPost = new HttpPost(uriBuilder.build().normalize());
+            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
+                httpPost.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
+            }
             httpPost.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
             
             Map<String, Object> values = new HashMap<String, Object>(2);
@@ -261,11 +277,15 @@ public class FilesFromCkanHelper {
                 .setRedirectStrategy(new LaxRedirectStrategy()).build();
         CloseableHttpResponse response = null;
         FileOutputStream fos = null;
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
 
         try {
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
             uriBuilder.setPath(uriBuilder.getPath());
             HttpPost httpPost = new HttpPost(uriBuilder.build().normalize());
+            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
+                httpPost.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
+            }
             httpPost.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
             
             Map<String, Object> values = new HashMap<String, Object>(2);

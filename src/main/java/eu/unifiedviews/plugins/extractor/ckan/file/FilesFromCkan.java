@@ -1,7 +1,9 @@
 package eu.unifiedviews.plugins.extractor.ckan.file;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +13,8 @@ import eu.unifiedviews.dataunit.files.FilesDataUnit.Entry;
 import eu.unifiedviews.dataunit.files.WritableFilesDataUnit;
 import eu.unifiedviews.dpu.DPU;
 import eu.unifiedviews.dpu.DPUContext;
-import eu.unifiedviews.dpu.DPUException;
 import eu.unifiedviews.dpu.DPUContext.MessageType;
+import eu.unifiedviews.dpu.DPUException;
 import eu.unifiedviews.helpers.dataunit.files.FilesDataUnitUtils;
 import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
 import eu.unifiedviews.helpers.dpu.context.ContextUtils;
@@ -23,8 +25,29 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkan.class);
 
-    public static final String CONFIGURATION_SECRET_TOKEN = "dpu.uv-e-filesFromCKAN.secret.token";
-    public static final String CONFIGURATION_CATALOG_API_LOCATION = "dpu.uv-e-filesFromCKAN.catalog.api.url";
+    /**
+     * @deprecated Global configuration should be used {@link CONFIGURATION_SECRET_TOKEN}
+     */
+    @Deprecated
+    public static final String CONFIGURATION_DPU_SECRET_TOKEN = "dpu.uv-e-filesFromCKAN.secret.token";
+
+    /**
+     * @deprecated Global configuration should be used {@link CONFIGURATION_CATALOG_API_LOCATION}
+     */
+    @Deprecated
+    public static final String CONFIGURATION_DPU_CATALOG_API_LOCATION = "dpu.uv-e-filesFromCKAN.catalog.api.url";
+
+    /**
+     * @deprecated Global configuration should be used {@link CONFIGURATION_HTTP_HEADER}
+     */
+    @Deprecated
+    public static final String CONFIGURATION_DPU_HTTP_HEADER = "dpu.uv-l-filesToCkan.http.header.";
+
+    public static final String CONFIGURATION_SECRET_TOKEN = "org.opendatanode.CKAN.secret.token";
+
+    public static final String CONFIGURATION_CATALOG_API_LOCATION = "org.opendatanode.CKAN.api.url";
+
+    public static final String CONFIGURATION_HTTP_HEADER = "org.opendatanode.CKAN.http.header.";
 
     @DataUnit.AsOutput(name = "output")
     public WritableFilesDataUnit filesOutput;
@@ -45,18 +68,43 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
         Map<String, String> environment = this.context.getEnvironment();
         final long pipelineId = this.context.getPipelineId();
         final String userId = this.context.getPipelineExecutionOwnerExternalId();
-        final String token = environment.get(CONFIGURATION_SECRET_TOKEN);
-        final String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
-        
-        if (token == null || token.isEmpty()) {
-            throw ContextUtils.dpuException(this.ctx, "errors.token.missing");
+        String token = environment.get(CONFIGURATION_SECRET_TOKEN);
+        if (StringUtils.isEmpty(token)) {
+            LOG.debug("Missing global configuration for CKAN secret token, trying to use DPU specific configuration");
+            token = environment.get(CONFIGURATION_DPU_SECRET_TOKEN);
+            if (StringUtils.isEmpty(token)) {
+                throw ContextUtils.dpuException(this.ctx, "errors.token.missing");
+            }
         }
         
-        if (catalogApiLocation == null || catalogApiLocation.isEmpty()) {
-            throw ContextUtils.dpuException(this.ctx, "errors.api.missing");
+        String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
+        if (StringUtils.isEmpty(catalogApiLocation)) {
+            LOG.debug("Missing global configuration for CKAN API location, trying to use DPU specific configuration");
+            catalogApiLocation = environment.get(CONFIGURATION_DPU_CATALOG_API_LOCATION);
+            if (StringUtils.isEmpty(catalogApiLocation)) {
+                throw ContextUtils.dpuException(this.ctx, "errors.api.missing");
+            }
         }
-        
-        CatalogApiConfig apiConfig = new CatalogApiConfig(catalogApiLocation, pipelineId, userId, token);
+
+        Map<String, String> additionalHttpHeaders = new HashMap<>();
+        for (Map.Entry<String, String> configEntry : environment.entrySet()) {
+            if (configEntry.getKey().startsWith(CONFIGURATION_HTTP_HEADER)) {
+                String headerName = configEntry.getKey().replace(CONFIGURATION_HTTP_HEADER, "");
+                String headerValue = configEntry.getValue();
+                additionalHttpHeaders.put(headerName, headerValue);
+            }
+        }
+        if (additionalHttpHeaders.isEmpty()) {
+            LOG.debug("Missing global configuration for additional HTTP headers, trying to use DPU specific configuration");
+            for (Map.Entry<String, String> configEntry : environment.entrySet()) {
+                if (configEntry.getKey().startsWith(CONFIGURATION_DPU_HTTP_HEADER)) {
+                    String headerName = configEntry.getKey().replace(CONFIGURATION_DPU_HTTP_HEADER, "");
+                    String headerValue = configEntry.getValue();
+                    additionalHttpHeaders.put(headerName, headerValue);
+                }
+            }
+        }
+        CatalogApiConfig apiConfig = new CatalogApiConfig(catalogApiLocation, pipelineId, userId, token, additionalHttpHeaders);
         
         if (ctx.canceled()) {
             throw ContextUtils.dpuExceptionCancelled(ctx);
