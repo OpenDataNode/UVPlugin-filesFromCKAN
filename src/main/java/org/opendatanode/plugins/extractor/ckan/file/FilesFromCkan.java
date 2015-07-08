@@ -24,11 +24,9 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkan.class);
 
-    public static final String CONFIGURATION_SECRET_TOKEN = "org.opendatanode.CKAN.secret.token";
+    public static final String CONFIGURATION_SECRET_TOKEN = "dpu.uv-e-filesFromCKAN.secret.token";
 
-    public static final String CONFIGURATION_CATALOG_API_LOCATION = "org.opendatanode.CKAN.api.url";
-
-    public static final String CONFIGURATION_HTTP_HEADER = "org.opendatanode.CKAN.http.header.[key]";
+    public static final String CONFIGURATION_CATALOG_API_LOCATION = "dpu.uv-e-filesFromCKAN.catalog.api.url";
 
     @DataUnit.AsOutput(name = "output")
     public WritableFilesDataUnit filesOutput;
