@@ -33,7 +33,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
 
     private static final int COMPONENT_WIDTH_PERCENTAGE = 75;
     
-    private Resource resource;
+    private ResourceItem resource;
     
     final private ObjectProperty<String> fileName = new ObjectProperty<String>("");
 
@@ -128,8 +128,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
                         ? ctx.tr("CkanVaadinDialog.tree.item.tooltip.no_description")
                         : item.getDescription());
                 
-                if (item instanceof Resource) {
-                    Resource res = (Resource) item;
+                if (item instanceof ResourceItem) {
+                    ResourceItem res = (ResourceItem) item;
                     descr.append("<p>");
                     descr.append("URL:</br>");
                     descr.append(res.url).append("</p>");
@@ -183,8 +183,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
                 
                 if (item != null) {
                     
-                    if (item instanceof Resource) {
-                        resource = (Resource) item;
+                    if (item instanceof ResourceItem) {
+                        resource = (ResourceItem) item;
                         addLine(logs, ctx.tr("CkanVaadinDialog.logs.item.selection.changed") + resource, null);
                     }
                 }
@@ -263,7 +263,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         return apiConfig;
     }
     
-    private List<Dataset> getPackages(CatalogApiConfig apiConfig) {
+    private List<DatasetItem> getPackages(CatalogApiConfig apiConfig) {
         if (apiConfig == null) {
             return null;
         }
@@ -278,7 +278,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         }
     }
     
-    private Organization getLoggedUserOrganization(CatalogApiConfig apiConfig) {
+    private OrganizationItem getLoggedUserOrganization(CatalogApiConfig apiConfig) {
         if (apiConfig == null) {
             return null;
         }
@@ -296,8 +296,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
     private void fillTree() {
         // config information
         CatalogApiConfig apiConfig = getApiConfig();
-        List<Dataset> packages = getPackages(apiConfig);
-        Organization myOrg = getLoggedUserOrganization(apiConfig);
+        List<DatasetItem> packages = getPackages(apiConfig);
+        OrganizationItem myOrg = getLoggedUserOrganization(apiConfig);
         
         
         // fill the tree
@@ -307,9 +307,9 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         String exludeOrg = null;
         if (myOrg != null) {
             exludeOrg = myOrg.id;
-            for (Dataset dataset : myOrg.datasets) {
+            for (DatasetItem dataset : myOrg.datasets) {
                 addTreeItem(dataset, null, dataset.resources.size() != 0);
-                for (Resource res : dataset.resources) {
+                for (ResourceItem res : dataset.resources) {
                     addTreeItem(res, dataset, false);
                 }
             }
@@ -320,14 +320,14 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         }
         
         // add public datasets
-        for (Dataset dataset : packages) {
+        for (DatasetItem dataset : packages) {
             if ((dataset.org != null && exludeOrg == dataset.org.id)
                     || datasetResourceTree.getItem(dataset) != null) {
                 continue; // skip my org's datasets (already added)
             }
             addTreeItem(dataset, null, dataset.resources.size() != 0);
             
-            for (Resource res : dataset.resources) {
+            for (ResourceItem res : dataset.resources) {
                 addTreeItem(res, dataset, false);
             }
         }
@@ -340,8 +340,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         datasetResourceTree.addItem(item).getItemProperty("caption").setValue(item.toString());
         datasetResourceTree.setChildrenAllowed(item, childrenAllowed);
         
-        if (item instanceof Dataset) {
-            Dataset dataset = (Dataset) item;
+        if (item instanceof DatasetItem) {
+            DatasetItem dataset = (DatasetItem) item;
             setDatasetParent(datasetResourceTree, dataset);
         } else {
             datasetResourceTree.setParent(item, parent);
@@ -349,11 +349,11 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
     }
 
     @SuppressWarnings("unchecked")
-    private void setDatasetParent(Tree tree, Dataset dataset) {
-        Organization orgItemId = dataset.org; 
+    private void setDatasetParent(Tree tree, DatasetItem dataset) {
+        OrganizationItem orgItemId = dataset.org; 
         
         if (dataset.org == null) {
-            orgItemId = new Organization("no-org", ctx.tr("CkanVaadinDialog.tree.org.for.datasets.without.org.label"));
+            orgItemId = new OrganizationItem("no-org", ctx.tr("CkanVaadinDialog.tree.org.for.datasets.without.org.label"));
         }
         
         Item orgItem = tree.getItem(orgItemId);
@@ -381,7 +381,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
     protected void setConfiguration(FilesFromCkanConfig_V1 config) throws DPUConfigException {
         
         if (config.getResourceId() != null && !config.getResourceId().isEmpty()) {
-            resource = new Resource(config.getResourceId(), config.getPackageId());
+            resource = new ResourceItem(config.getResourceId(), config.getPackageId());
         }
         
         fileName.setValue(config.getFileName() == null ? "" : config.getFileName());

@@ -6,23 +6,23 @@ import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-public class Dataset implements CkanTreeItem {
+public class DatasetItem implements CkanTreeItem {
     
     public String id;
     public String name;
     public String title;
     public String notes; // description
-    public Organization org;
+    public OrganizationItem org;
     
-    public List<Resource> resources;
+    public List<ResourceItem> resources;
     
-    public Dataset(JsonObject dataset) {
+    public DatasetItem(JsonObject dataset) {
         this.id = dataset.getString("id");
         this.name = dataset.getString("name", "");
         this.title = dataset.getString("title", "");
         this.notes = dataset.getString("notes", "");
         
-        this.resources = new ArrayList<Resource>();
+        this.resources = new ArrayList<ResourceItem>();
         
         loadResources(dataset.getJsonArray("resources"));
         try {
@@ -36,7 +36,7 @@ public class Dataset implements CkanTreeItem {
         if (resources != null) {
             this.resources.clear();
             for (JsonObject resource : resources.getValuesAs(JsonObject.class)) {
-                this.resources.add(new Resource(resource, this.id));
+                this.resources.add(new ResourceItem(resource, this.id));
             }
         }
     }
@@ -44,7 +44,7 @@ public class Dataset implements CkanTreeItem {
     private void loadOrganization(JsonObject org) {
         if (org != null) {
             JsonObject new_name = (JsonObject) org;
-            this.org = new Organization(new_name);
+            this.org = new OrganizationItem(new_name);
         }
     }
     
@@ -84,7 +84,7 @@ public class Dataset implements CkanTreeItem {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Dataset other = (Dataset) obj;
+        DatasetItem other = (DatasetItem) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
