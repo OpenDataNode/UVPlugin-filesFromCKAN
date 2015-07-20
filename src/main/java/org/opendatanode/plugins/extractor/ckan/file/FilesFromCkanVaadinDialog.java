@@ -1,5 +1,6 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import eu.unifiedviews.dpu.config.DPUConfigException;
 import eu.unifiedviews.helpers.dpu.vaadin.dialog.AbstractDialog;
+import eu.unifiedviews.plugins.extractor.ckan.file.FilesFromCkanConfig_V1;
 
 @SuppressWarnings("serial")
 public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfig_V1> {
@@ -46,6 +48,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
     private String apiUrl = null;
     private String token = null;
     private String userExternalId = null;
+
+    private Map<String, String> additionalHttpHeaders = null;
     
     public FilesFromCkanVaadinDialog() {
         super(FilesFromCkan.class);
@@ -73,7 +77,16 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         apiUrl = env.get(FilesFromCkan.CONFIGURATION_CATALOG_API_LOCATION);
         token = env.get(FilesFromCkan.CONFIGURATION_SECRET_TOKEN);
         userExternalId = this.getContext().getUserExternalId();
-        
+
+		additionalHttpHeaders = new HashMap<>();
+        for (Map.Entry<String, String> configEntry : env.entrySet()) {
+            if (configEntry.getKey().startsWith(FilesFromCkan.CONFIGURATION_HTTP_HEADER)) {
+                String headerName = configEntry.getKey().replace(FilesFromCkan.CONFIGURATION_HTTP_HEADER, "");
+                String headerValue = configEntry.getValue();
+                additionalHttpHeaders.put(headerName, headerValue);
+            }
+        }
+
         setSizeFull();
 //        final FormLayout mainLayout = new FormLayout();
         final VerticalLayout mainLayout = new VerticalLayout();
@@ -248,7 +261,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
     }
 
     private CatalogApiConfig getApiConfig() {
-        CatalogApiConfig apiConfig = new CatalogApiConfig(apiUrl, -1, userExternalId, token);
+        CatalogApiConfig apiConfig = new CatalogApiConfig(apiUrl, -1, userExternalId, token, new HashMap<String, String>());
         
         if (apiUrl == null || apiUrl.isEmpty()) {
             addLine(logs, ctx.tr("errors.api.missing", userExternalId), null);

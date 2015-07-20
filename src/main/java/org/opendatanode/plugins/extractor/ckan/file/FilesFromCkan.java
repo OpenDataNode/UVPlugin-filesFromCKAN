@@ -1,7 +1,9 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +21,18 @@ import eu.unifiedviews.helpers.dataunit.resource.ResourceHelpers;
 import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
 import eu.unifiedviews.helpers.dpu.context.ContextUtils;
 import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
+import eu.unifiedviews.plugins.extractor.ckan.file.FilesFromCkanConfig_V1;
 
 @DPU.AsExtractor
 public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkan.class);
 
-    public static final String CONFIGURATION_SECRET_TOKEN = "dpu.uv-e-filesFromCKAN.secret.token";
+    public static final String CONFIGURATION_SECRET_TOKEN = "org.opendatanode.CKAN.secret.token";
 
-    public static final String CONFIGURATION_CATALOG_API_LOCATION = "dpu.uv-e-filesFromCKAN.catalog.api.url";
+    public static final String CONFIGURATION_CATALOG_API_LOCATION = "org.opendatanode.CKAN.api.url";
+
+    public static final String CONFIGURATION_HTTP_HEADER = "org.opendatanode.CKAN.http.header.";
 
     @DataUnit.AsOutput(name = "output")
     public WritableFilesDataUnit filesOutput;
@@ -48,18 +53,29 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
         Map<String, String> environment = this.context.getEnvironment();
         final long pipelineId = this.context.getPipelineId();
         final String userId = this.context.getPipelineExecutionOwnerExternalId();
-        final String token = environment.get(CONFIGURATION_SECRET_TOKEN);
-        final String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
 
-        if (token == null || token.isEmpty()) {
+        final String token = environment.get(CONFIGURATION_SECRET_TOKEN);
+        if (StringUtils.isEmpty(token)) {
+            LOG.debug("Missing global configuration property {} for CKAN secret token", CONFIGURATION_SECRET_TOKEN);
             throw ContextUtils.dpuException(this.ctx, "errors.token.missing");
         }
 
-        if (catalogApiLocation == null || catalogApiLocation.isEmpty()) {
+        final String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
+        if (StringUtils.isEmpty(catalogApiLocation)) {
+            LOG.debug("Missing global configuration property {} for CKAN API location", CONFIGURATION_CATALOG_API_LOCATION);
             throw ContextUtils.dpuException(this.ctx, "errors.api.missing");
         }
 
-        CatalogApiConfig apiConfig = new CatalogApiConfig(catalogApiLocation, pipelineId, userId, token);
+        Map<String, String> additionalHttpHeaders = new HashMap<>();
+        for (Map.Entry<String, String> configEntry : environment.entrySet()) {
+            if (configEntry.getKey().startsWith(CONFIGURATION_HTTP_HEADER)) {
+                String headerName = configEntry.getKey().replace(CONFIGURATION_HTTP_HEADER, "");
+                String headerValue = configEntry.getValue();
+                additionalHttpHeaders.put(headerName, headerValue);
+            }
+        }
+
+        CatalogApiConfig apiConfig = new CatalogApiConfig(catalogApiLocation, pipelineId, userId, token, additionalHttpHeaders);
 
         if (ctx.canceled()) {
             throw ContextUtils.dpuExceptionCancelled(ctx);
