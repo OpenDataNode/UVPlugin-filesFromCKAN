@@ -22,7 +22,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
@@ -119,51 +118,11 @@ public class FilesFromCkanHelper {
         }
         return datasetsList;
     }
-    
-    public static List<Dataset> getPackageListWithResources(CatalogApiConfig apiConfig, String ckanApiUrl) throws Exception {
-        List<Dataset> datasetsList = new ArrayList<Dataset>();
-        
-        CloseableHttpClient client = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
-        
-        try {
-            
-            URIBuilder uriBuilder = new URIBuilder(ckanApiUrl + API_ACTION_PACKAGES_WITH_RESOURCES);
-            uriBuilder.setPath(uriBuilder.getPath());
-            HttpGet httpGet = new HttpGet(uriBuilder.build().normalize());
-            for (Map.Entry<String, String> additionalHeader : additionalHttpHeaders.entrySet()) {
-                httpGet.addHeader(additionalHeader.getKey(), additionalHeader.getValue());
-            }
-            httpGet.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
-            
-            response = client.execute(httpGet);
-            
-            checkResponseIsJSON(response);
-            
-            JsonReaderFactory readerFactory = Json.createReaderFactory(Collections.<String, Object> emptyMap());
-            JsonReader reader = readerFactory.createReader(response.getEntity().getContent());
-            JsonObject responseJson = reader.readObject();
-            
-            checkResponseSuccess(responseJson);
 
-            JsonArray datasets = responseJson.getJsonArray("result");
-            for (JsonObject dataset : datasets.getValuesAs(JsonObject.class)) {
-                datasetsList.add(new Dataset(dataset));
-            }
-        } finally {
-            FilesFromCkanHelper.tryCloseHttpResponse(response);
-            FilesFromCkanHelper.tryCloseHttpClient(client);
-        }
-        return datasetsList;
-    }
-    
     /**
      * <p>
-     * Return organization with its public datasets and if the user is member, it also
-     * includes private datasets
+     * Return organization with its public datasets and if the user is member, it also includes private datasets
      * <p>
-     * 
      * <p>
      * WARNING: the datasets have no resources loaded, for this purposet use CkanHelper.getOrganizationWithDatasetAndResources
      * </p>

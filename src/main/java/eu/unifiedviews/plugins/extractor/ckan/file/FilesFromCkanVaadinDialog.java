@@ -78,8 +78,8 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         userExternalId = this.getContext().getUserExternalId();
         additionalHttpHeaders = new HashMap<>();
         for (Map.Entry<String, String> configEntry : env.entrySet()) {
-            if (configEntry.getKey().startsWith(FilesFromCkan.CONFIGURATION_DPU_HTTP_HEADER)) {
-                String headerName = configEntry.getKey().replace(FilesFromCkan.CONFIGURATION_DPU_HTTP_HEADER, "");
+            if (configEntry.getKey().startsWith(FilesFromCkan.CONFIGURATION_HTTP_HEADER)) {
+                String headerName = configEntry.getKey().replace(FilesFromCkan.CONFIGURATION_HTTP_HEADER, "");
                 String headerValue = configEntry.getValue();
                 additionalHttpHeaders.put(headerName, headerValue);
             }
