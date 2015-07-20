@@ -26,7 +26,6 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import eu.unifiedviews.dpu.config.DPUConfigException;
 import eu.unifiedviews.helpers.dpu.vaadin.dialog.AbstractDialog;
-import eu.unifiedviews.plugins.extractor.ckan.file.FilesFromCkanConfig_V1;
 
 @SuppressWarnings("serial")
 public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfig_V1> {

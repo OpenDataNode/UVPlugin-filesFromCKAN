@@ -19,7 +19,6 @@ import eu.unifiedviews.helpers.dataunit.files.FilesDataUnitUtils;
 import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
 import eu.unifiedviews.helpers.dpu.context.ContextUtils;
 import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
-import eu.unifiedviews.plugins.extractor.ckan.file.FilesFromCkanConfig_V1;
 
 @DPU.AsExtractor
 public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
