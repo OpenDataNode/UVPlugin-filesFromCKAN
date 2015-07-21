@@ -1,21 +1,22 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.opendatanode.plugins.extractor.ckan.file.FilesFromCkanConfig_V2;
 
 import eu.unifiedviews.dpu.config.DPUConfigException;
 import eu.unifiedviews.helpers.dpu.config.VersionedConfig;
 
-public class FilesFromCkanConfig_V1 implements VersionedConfig<FilesFromCkanConfig_V2> {
+public class FilesFromCkanConfig_V2 implements VersionedConfig<FilesFromCkanConfig_V2> {
     
     private String fileName;
     
     private String packageId;
     
     private String resourceId;
+    
+    private boolean showOnlyMyOrgDatasets = true;
 
-    public FilesFromCkanConfig_V1() {
+    public FilesFromCkanConfig_V2() {
     }
     
     public String getFileName() {
@@ -41,6 +42,14 @@ public class FilesFromCkanConfig_V1 implements VersionedConfig<FilesFromCkanConf
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
+    
+    public boolean isShowOnlyMyOrgDatasets() {
+        return showOnlyMyOrgDatasets;
+    }
+
+    public void setShowOnlyMyOrgDatasets(boolean showOnlyMyOrgDatasets) {
+        this.showOnlyMyOrgDatasets = showOnlyMyOrgDatasets;
+    }
 
     @Override
     public String toString() {
@@ -49,11 +58,6 @@ public class FilesFromCkanConfig_V1 implements VersionedConfig<FilesFromCkanConf
 
     @Override
     public FilesFromCkanConfig_V2 toNextVersion() throws DPUConfigException {
-        FilesFromCkanConfig_V2 v2 = new FilesFromCkanConfig_V2();
-        v2.setFileName(fileName);
-        v2.setPackageId(packageId);
-        v2.setResourceId(resourceId);
-        v2.setShowOnlyMyOrgDatasets(true);
-        return v2;
+        return this;
     }
 }

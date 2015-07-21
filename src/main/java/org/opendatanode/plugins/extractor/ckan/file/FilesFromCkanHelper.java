@@ -34,6 +34,8 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.unifiedviews.helpers.dpu.vaadin.dialog.UserDialogContext;
+
 public class FilesFromCkanHelper {
     
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkanHelper.class);
@@ -60,7 +62,13 @@ public class FilesFromCkanHelper {
 
     private static final String ACTION_RESOURCE_DOWNLOAD = "resource_download";
 
+    private UserDialogContext ctx; // needed for i18n
+
     
+    public FilesFromCkanHelper(UserDialogContext ctx) {
+        this.ctx = ctx;
+    }
+
     public static JsonObject buildJSON(Map<String, Object> values) {
         JsonBuilderFactory factory = Json.createBuilderFactory(Collections.<String, Object> emptyMap());
         JsonObjectBuilder builder = factory.createObjectBuilder();
@@ -70,7 +78,7 @@ public class FilesFromCkanHelper {
         return builder.build();
     }
     
-    public static List<Dataset> getPackageListWithResources(CatalogApiConfig apiConfig) throws Exception {
+    public List<Dataset> getPackageListWithResources(CatalogApiConfig apiConfig) throws Exception {
         List<Dataset> datasetsList = new ArrayList<Dataset>();
         
         CloseableHttpClient client = HttpClients.createDefault();
@@ -132,7 +140,7 @@ public class FilesFromCkanHelper {
      * @return
      * @throws Exception
      */
-    public static Organization getOrganization(CatalogApiConfig apiConfig, String orgId) throws Exception {
+    public Organization getOrganization(CatalogApiConfig apiConfig, String orgId) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
@@ -184,7 +192,7 @@ public class FilesFromCkanHelper {
      * @return
      * @throws Exception
      */
-    public static Dataset getDataset(CatalogApiConfig apiConfig, String datasetIdOrName) throws Exception {
+    public Dataset getDataset(CatalogApiConfig apiConfig, String datasetIdOrName) throws Exception {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
@@ -281,13 +289,14 @@ public class FilesFromCkanHelper {
         }
     }
     
-    private static void checkResponseSuccess(JsonObject responseJson) throws Exception {
+    private void checkResponseSuccess(JsonObject responseJson) throws Exception {
         boolean bSuccess = responseJson.getBoolean("success");
 
         if (!bSuccess) {
             String errorType = responseJson.getJsonObject("error").getString("__type");
             String errorMessage = responseJson.getJsonObject("error").getString("message");
-            throw new Exception(String.format("CKAN error response: [%s] %s", errorType, errorMessage));
+            String msg = ctx.tr("FilesFromCkanHelper.error.response", errorMessage);
+            throw new Exception(msg);
         }
     }
     

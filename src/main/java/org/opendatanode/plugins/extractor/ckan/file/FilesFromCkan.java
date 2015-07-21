@@ -22,7 +22,7 @@ import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
 import eu.unifiedviews.plugins.extractor.ckan.file.FilesFromCkanConfig_V1;
 
 @DPU.AsExtractor
-public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
+public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V2> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkan.class);
 
@@ -38,7 +38,10 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
     private DPUContext context;
 
     public FilesFromCkan() {
-        super(FilesFromCkanVaadinDialog.class, ConfigHistory.noHistory(FilesFromCkanConfig_V1.class));
+        super(FilesFromCkanVaadinDialog.class,
+                ConfigHistory.history(FilesFromCkanConfig_V2.class)
+                    .alternative(FilesFromCkanConfig_V1.class)
+                    .addCurrent(FilesFromCkanConfig_V2.class));
     }
 
     @Override
