@@ -19,13 +19,13 @@ Downloads file from CKAN resources
 |output              |o          |FilesDataUnit                    |Downloaded file from CKAN resource |
 
 
-### Version history ###
+### Version history
 
 #### v1.0.0
 * Initial version
 
 
-### Developer's notes ###
+### Developer's notes
 
 The configuration parameters are needed in both frontend and backend configuration files.
 Dependent on ckanext-odn-pipeline branch feature/edem requires change in CKAN core to allow downloading files through API ckan/controllers/api.py in method action add code mentioned bellow.
