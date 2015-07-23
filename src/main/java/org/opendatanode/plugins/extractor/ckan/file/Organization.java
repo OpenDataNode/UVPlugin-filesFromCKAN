@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
 import java.util.ArrayList;
 import java.util.List;
