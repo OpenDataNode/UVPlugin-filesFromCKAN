@@ -1,4 +1,4 @@
-package eu.unifiedviews.plugins.extractor.ckan.file;
+package org.opendatanode.plugins.extractor.ckan.file;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
