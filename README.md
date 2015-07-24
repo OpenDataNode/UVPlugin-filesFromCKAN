@@ -3,30 +3,12 @@ E-FilesFromCKAN
 
 ### Documentation
 
-Downloads file from CKAN resources
-
-### Configuration parameters
-
-|Parameter                        |Description                             |                                                        
-|---------------------------------|----------------------------------------|
-|org.opendatanode.CKAN.secret.token |Token used to authenticate to CKAN, has to be set in frontend.properties and backend.properties |
-|org.opendatanode.CKAN.api.url    |URL to CKAN API internal_api, e.g. http://{host}/api/action/internal_api, has to be set in frontend.properties and backend.properties  |
-|org.opendatanode.CKAN.http.header.[key] | Custom HTTP header added to requests on CKAN |
-
-### Inputs and outputs
-
-|Name                |Type       |DataUnit                         |Description                        |
-|--------------------|-----------|---------------------------------|-----------------------------------|
-|output              |o          |FilesDataUnit                    |Downloaded file from CKAN resource |
+* see [Plugin Documentation](./doc/About.md)
+* see [Plugin Documentation](./doc/About_sk.md) (in Slovak)
 
 ### Version history
 
-* GUI changes: added new checkbox for showing only 'my' (organization) datasets
-* i18n update
-* fixed bug: after selecting resource, it was not selected in tree after reopening config dialog
-
-#### v1.0.0
-* Initial version
+* see [Changelog](./CHANGELOG.md)
 
 
 ### Developer's notes
