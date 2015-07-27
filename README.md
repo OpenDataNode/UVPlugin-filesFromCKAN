@@ -13,7 +13,7 @@ E-FilesFromCKAN
 | Property Name | Description |
 |:----|:----|
 `org.opendatanode.CKAN.secret.token` |Token used to authenticate to CKAN |
-`org.opendatanode.CKAN.api.url` | URL where CKAN api is located, has to be set in backend.properties |
+`org.opendatanode.CKAN.api.url` | URL where CKAN api is located |
 `org.opendatanode.CKAN.http.header.[key]` | Custom HTTP header added to requests on CKAN |
 
 Example:
@@ -25,8 +25,8 @@ org.opendatanode.CKAN.http.header.X-Forwarded-Host = www.myopendatanode.org
 org.opendatanode.CKAN.http.header.X-Forwarded-Proto = https
 ```
 
-* dependent on ckanext-odn-pipeline v0.5.1+
-* Dependent on ckanext-odn-pipeline branch feature/edem requires change in CKAN core to allow downloading files through API ckan/controllers/api.py in method action add code mentioned bellow.
+* Dependent on ckanext-odn-pipeline v0.5.1+
+* Requires change in CKAN core to allow downloading files through API ckan/controllers/api.py in method action add code mentioned bellow.
 
 after:
 
