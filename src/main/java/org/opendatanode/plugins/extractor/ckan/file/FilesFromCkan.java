@@ -38,8 +38,7 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V2> {
 
     public FilesFromCkan() {
         super(FilesFromCkanVaadinDialog.class,
-                ConfigHistory.history(FilesFromCkanConfig_V2.class)
-                    .alternative(FilesFromCkanConfig_V1.class)
+                ConfigHistory.history(FilesFromCkanConfig_V1.class)
                     .addCurrent(FilesFromCkanConfig_V2.class));
     }
 
