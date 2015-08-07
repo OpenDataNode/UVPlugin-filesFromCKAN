@@ -1,5 +1,7 @@
 package org.opendatanode.plugins.extractor.ckan.file;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -475,14 +478,44 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
+                    // disable filters
+                    Collection<Filter> oldFilters = removeFilters();
                     
                     fillTree();
                     setPreviouslySelectedResource();
                     
                     loadingBar.setVisible(false);
                     showOnlyMyOwnDatasetCheckbox.setEnabled(true);
+                    
+                    // enable filters
+                    addFilters(oldFilters);
                 }
             });
+        }
+    }
+    
+    /**
+     * Resets tree filters 
+     * 
+     * @return
+     *      removed filters
+     */
+    private Collection<Filter> removeFilters() {
+        HierarchicalContainer ds = (HierarchicalContainer) datasetResourceTree.getContainerDataSource();
+        
+        Collection<Filter> returnValue = new ArrayList<Filter>();
+        returnValue.addAll(ds.getContainerFilters());
+        
+        ds.removeAllContainerFilters();
+
+        return returnValue;
+    }
+    
+    private void addFilters(Collection<Filter> filters) {
+        
+        HierarchicalContainer ds = (HierarchicalContainer) datasetResourceTree.getContainerDataSource();
+        for (Filter filter : filters) {
+            ds.addContainerFilter(filter);
         }
     }
 }
