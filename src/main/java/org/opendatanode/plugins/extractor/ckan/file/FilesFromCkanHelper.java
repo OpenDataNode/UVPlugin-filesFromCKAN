@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
@@ -137,40 +136,6 @@ public class FilesFromCkanHelper {
             if (fos != null) {
                 fos.close();
             }
-        }
-        return datasetsList;
-    }
-
-    public static List<DatasetItem> getPackageListWithResources(String ckanApiUrl) throws Exception {
-        List<DatasetItem> datasetsList = new ArrayList<DatasetItem>();
-
-        CloseableHttpClient client = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-
-        try {
-
-            URIBuilder uriBuilder = new URIBuilder(ckanApiUrl + API_ACTION_PACKAGES_WITH_RESOURCES);
-            uriBuilder.setPath(uriBuilder.getPath());
-            HttpGet httpGet = new HttpGet(uriBuilder.build().normalize());
-            httpGet.setConfig(RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).build());
-
-            response = client.execute(httpGet);
-
-            checkResponseIsJSON(response);
-
-            JsonReaderFactory readerFactory = Json.createReaderFactory(Collections.<String, Object> emptyMap());
-            JsonReader reader = readerFactory.createReader(response.getEntity().getContent());
-            JsonObject responseJson = reader.readObject();
-
-            checkResponseSuccess(responseJson);
-
-            JsonArray datasets = responseJson.getJsonArray("result");
-            for (JsonObject dataset : datasets.getValuesAs(JsonObject.class)) {
-                datasetsList.add(new DatasetItem(dataset));
-            }
-        } finally {
-            FilesFromCkanHelper.tryCloseHttpResponse(response);
-            FilesFromCkanHelper.tryCloseHttpClient(client);
         }
         return datasetsList;
     }
