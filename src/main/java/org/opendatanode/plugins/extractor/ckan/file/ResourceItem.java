@@ -2,7 +2,7 @@ package org.opendatanode.plugins.extractor.ckan.file;
 
 import javax.json.JsonObject;
 
-public class Resource implements CkanTreeItem {
+public class ResourceItem implements CkanTreeItem {
     
     public String packageId; // not necessary ?
     public String id;
@@ -10,7 +10,7 @@ public class Resource implements CkanTreeItem {
     public String description;
     public String url;
     
-    public Resource(JsonObject resource, String packageId) {
+    public ResourceItem(JsonObject resource, String packageId) {
         this.packageId = packageId;
         this.id = resource.getString("id");
         this.name = resource.getString("name", "");
@@ -23,7 +23,7 @@ public class Resource implements CkanTreeItem {
      * @param id
      * @param packageId
      */
-    public Resource(String id, String packageId) {
+    public ResourceItem(String id, String packageId) {
         // these parameters are needed for config
         this.id = id;
         this.packageId = packageId;
@@ -69,7 +69,7 @@ public class Resource implements CkanTreeItem {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Resource other = (Resource) obj;
+        ResourceItem other = (ResourceItem) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
