@@ -1,63 +1,47 @@
-# E-FilesFromCKAN #
+E-FilesFromCKAN
 ----------
 
-###General###
+### Documentation
 
-|                              |                                                               |
-|------------------------------|---------------------------------------------------------------|
-|**Name:**                     |E-FilesFromCKAN                                                |
-|**Description:**              |Downloads file from CKAN resources.                            |
-|**Status:**                   |Supported in Plugins v2.1.X Updated to use Plugin-DevEnv v2.1.X |
-|                              |                                                               |
-|**DPU class name:**           |FilesFromCKAN                                                  | 
-|**Configuration class name:** |FilesFromCKANConfig_V1                                         |
-|**Dialogue class name:**      |FilesFromCKANVaadinDialog                                      | 
+* see [Plugin Documentation](./doc/About.md)
+* see [Plugin Documentation](./doc/About_sk.md) (in Slovak)
 
-***
+### Technical notes
 
-###Configuration parameters###
+* These properties have to be set in frontend.properties and backend.properties of UnifiedViews for correct functionality of DPU
 
-|Parameter                        |Description                             |                                                        
-|---------------------------------|----------------------------------------|
-|dpu.uv-e-filesFromCKAN.secret.token |authentication token |
-|dpu.uv-e-filesFromCKAN.catalog.api.url |URL to CKAN API internal_api, e.g. http://host/api/action/internal_api  |
+| Property Name | Description |
+|:----|:----|
+`org.opendatanode.CKAN.secret.token` |Token used to authenticate to CKAN |
+`org.opendatanode.CKAN.api.url` | URL where CKAN api is located |
+`org.opendatanode.CKAN.http.header.[key]` | Custom HTTP header added to requests on CKAN |
 
-***
+Example:
 
-### Inputs and outputs ###
+```INI
+org.opendatanode.CKAN.secret.token = 12345678901234567890123456789012
+org.opendatanode.CKAN.api.url = ﻿http://localhost:9080/internalcatalog/api/action/internal_api
+org.opendatanode.CKAN.http.header.X-Forwarded-Host = www.myopendatanode.org
+org.opendatanode.CKAN.http.header.X-Forwarded-Proto = https
+```
 
-|Name                |Type       |DataUnit                         |Description                        |
-|--------------------|-----------|---------------------------------|-----------------------------------|
-|output              |o          |FilesDataUnit                    |Downloaded file from CKAN resource |
-
-
-***
-
-### Version history ###
-
-|Version            |Release notes                                   |
-|-------------------|------------------------------------------------|
-|1.0.0              |N/A                                             |                                
-
-
-***
-
-### Developer's notes ###
-
-|Author            |Notes                 |
-|------------------|----------------------|
-|mvi               |The configuration parameters are needed in both frontend and backend configuration files. |
-|mvi               |dependent on ckanext-odn-pipeline branch feature/edem| 
-|mvi               |requires change in CKAN core to allow downloading files through API|
-|                  |ckan/controllers/api.py in method action add code mentioned bellow|
+* Dependent on ckanext-odn-pipeline v0.5.1+
+* Requires change in CKAN core to allow downloading files through API ckan/controllers/api.py in method action add code mentioned bellow.
 
 after:
+
 ```python
 result = function(context, request_data) (line 197)
 ```
+
 add:
+
 ```python
 if 'internal_api' == logic_function and request_data.get('action','') == 'resource_download':
 	return result
 ```
+
+### Version history
+
+* see [Changelog](./CHANGELOG.md)
 

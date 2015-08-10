@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.unifiedviews.helpers.dataunit.resource.Resource;
 import eu.unifiedviews.helpers.dataunit.resource.ResourceConverter;
+import eu.unifiedviews.helpers.dpu.vaadin.dialog.UserDialogContext;
+
 
 public class FilesFromCkanHelper {
 
@@ -74,6 +76,12 @@ public class FilesFromCkanHelper {
     private static final String API_ACTION_RESOURCE_SHOW = "resource_show";
 
     private static final String ACTION_RESOURCE_DOWNLOAD = "resource_download";
+    private UserDialogContext ctx; // needed for i18n
+
+    
+    public FilesFromCkanHelper(UserDialogContext ctx) {
+        this.ctx = ctx;
+    }
 
     public static JsonObject buildJSON(Map<String, Object> values) {
         JsonBuilderFactory factory = Json.createBuilderFactory(Collections.<String, Object> emptyMap());
