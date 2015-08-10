@@ -41,7 +41,6 @@ import eu.unifiedviews.helpers.dataunit.resource.Resource;
 import eu.unifiedviews.helpers.dataunit.resource.ResourceConverter;
 import eu.unifiedviews.helpers.dpu.vaadin.dialog.UserDialogContext;
 
-
 public class FilesFromCkanHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkanHelper.class);
@@ -76,9 +75,9 @@ public class FilesFromCkanHelper {
     private static final String API_ACTION_RESOURCE_SHOW = "resource_show";
 
     private static final String ACTION_RESOURCE_DOWNLOAD = "resource_download";
+
     private UserDialogContext ctx; // needed for i18n
 
-    
     public FilesFromCkanHelper(UserDialogContext ctx) {
         this.ctx = ctx;
     }
@@ -99,8 +98,8 @@ public class FilesFromCkanHelper {
         CloseableHttpResponse response = null;
         FileOutputStream fos = null;
 
-		Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
-        
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
+
         try {
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
             uriBuilder.setPath(uriBuilder.getPath());
@@ -193,8 +192,8 @@ public class FilesFromCkanHelper {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
 
-		Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
-        
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
+
         try {
 
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
@@ -245,8 +244,8 @@ public class FilesFromCkanHelper {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
 
-		Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
-        
+        Map<String, String> additionalHttpHeaders = apiConfig.getAdditionalHttpHeaders();
+
         try {
 
             URIBuilder uriBuilder = new URIBuilder(apiConfig.getCatalogApiLocation());
