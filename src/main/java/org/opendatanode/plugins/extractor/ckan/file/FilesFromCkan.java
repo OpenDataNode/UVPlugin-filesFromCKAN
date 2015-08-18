@@ -16,12 +16,14 @@ import eu.unifiedviews.dpu.DPUContext;
 import eu.unifiedviews.dpu.DPUContext.MessageType;
 import eu.unifiedviews.dpu.DPUException;
 import eu.unifiedviews.helpers.dataunit.files.FilesDataUnitUtils;
+import eu.unifiedviews.helpers.dataunit.resource.Resource;
+import eu.unifiedviews.helpers.dataunit.resource.ResourceHelpers;
 import eu.unifiedviews.helpers.dpu.config.ConfigHistory;
 import eu.unifiedviews.helpers.dpu.context.ContextUtils;
 import eu.unifiedviews.helpers.dpu.exec.AbstractDpu;
 
 @DPU.AsExtractor
-public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
+public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V2> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FilesFromCkan.class);
 
@@ -37,7 +39,9 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
     private DPUContext context;
 
     public FilesFromCkan() {
-        super(FilesFromCkanVaadinDialog.class, ConfigHistory.noHistory(FilesFromCkanConfig_V1.class));
+        super(FilesFromCkanVaadinDialog.class,
+                ConfigHistory.history(FilesFromCkanConfig_V1.class)
+                    .addCurrent(FilesFromCkanConfig_V2.class));
     }
 
     @Override
@@ -51,13 +55,13 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
         final long pipelineId = this.context.getPipelineId();
         final String userId = this.context.getPipelineExecutionOwnerExternalId();
 
-        String token = environment.get(CONFIGURATION_SECRET_TOKEN);
+        final String token = environment.get(CONFIGURATION_SECRET_TOKEN);
         if (StringUtils.isEmpty(token)) {
             LOG.debug("Missing global configuration property {} for CKAN secret token", CONFIGURATION_SECRET_TOKEN);
             throw ContextUtils.dpuException(this.ctx, "errors.token.missing");
         }
 
-        String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
+        final String catalogApiLocation = environment.get(CONFIGURATION_CATALOG_API_LOCATION);
         if (StringUtils.isEmpty(catalogApiLocation)) {
             LOG.debug("Missing global configuration property {} for CKAN API location", CONFIGURATION_CATALOG_API_LOCATION);
             throw ContextUtils.dpuException(this.ctx, "errors.api.missing");
@@ -85,11 +89,18 @@ public class FilesFromCkan extends AbstractDpu<FilesFromCkanConfig_V1> {
                 : config.getFileName();
 
         try {
-            LOG.debug("Downloading CKAN resource with id {} from package / dataset with id {}", packageId, packageId);
-            Entry destinationFile = FilesDataUnitUtils.createFile(filesOutput, fileName);
+            LOG.debug("Creating output file in files data unit with name {}", fileName);
+            Entry destinationFile = FilesDataUnitUtils.createFile(this.filesOutput, fileName);
+
+            LOG.debug("Creating meta data Resource object from CKAN meta data");
+            Resource resource = FilesFromCkanHelper.getResourceMetadata(apiConfig, resourceId);
+            ResourceHelpers.setResource(this.filesOutput, destinationFile.getSymbolicName(), resource);
+
+            LOG.debug("Downloading CKAN resource with id {} from package / dataset with id {}", resourceId, packageId);
             FilesFromCkanHelper.resourceDownload(apiConfig, packageId, resourceId, destinationFile.getFileURIString());
+
         } catch (DataUnitException e) {
-            ContextUtils.dpuException(ctx, e, "Failed to create destination file.");
+            ContextUtils.dpuException(this.ctx, e, "errors.destination.file");
         } catch (Exception e) {
             String errMsg = "Failed to download file.";
             LOG.error(errMsg, e);
