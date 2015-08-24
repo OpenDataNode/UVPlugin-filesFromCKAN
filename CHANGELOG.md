@@ -1,7 +1,7 @@
 E-FilesFromCKAN
 ----------
 
-v1.1.0-SNAPSHOT
+v1.1.1
 ---
 * GUI changes: added new checkbox for showing only 'my' (organization) datasets
 * i18n update
