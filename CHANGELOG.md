@@ -1,7 +1,11 @@
 E-FilesFromCKAN
 ----------
 
-v1.1.2-SNAPSHOT
+v1.1.3-SNAPSHOT
+---
+N/A
+
+v1.1.2
 ---
 * Update to API 2.1.3
 
