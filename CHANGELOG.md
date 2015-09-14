@@ -3,7 +3,7 @@ E-FilesFromCKAN
 
 v1.1.3-SNAPSHOT
 ---
-N/A
+* Update to API 2.1.4
 
 v1.1.2
 ---
