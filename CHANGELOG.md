@@ -3,7 +3,7 @@ E-FilesFromCKAN
 
 v1.1.4-SNAPSHOT
 ---
-N/A
+* fixed: DPU won't load my organization datasets [#8]
 
 v1.1.3-SNAPSHOT
 ---

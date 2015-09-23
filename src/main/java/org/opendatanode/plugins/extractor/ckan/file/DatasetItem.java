@@ -15,12 +15,14 @@ public class DatasetItem implements CkanTreeItem {
     public OrganizationItem org;
     
     public List<ResourceItem> resources;
+    public int numOfResources;
     
     public DatasetItem(JsonObject dataset) {
         this.id = dataset.getString("id");
         this.name = dataset.getString("name", "");
         this.title = dataset.getString("title", "");
         this.notes = dataset.getString("notes", "");
+        this.numOfResources = dataset.getInt("num_resources", 0);
         
         this.resources = new ArrayList<ResourceItem>();
         
