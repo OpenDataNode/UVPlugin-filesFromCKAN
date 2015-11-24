@@ -1,6 +1,10 @@
 E-FilesFromCKAN
 ----------
 
+v1.1.5-SNAPSHOT
+---
+* TODO
+
 v1.1.4
 ---
 * fixed: DPU won't load my organization datasets [#8]
