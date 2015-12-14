@@ -1,6 +1,10 @@
 E-FilesFromCKAN
 ----------
 
+v1.1.5
+---
+* fixed: CKAN resources list in DPU configuration dialog is alphabetically ordered now
+
 v1.1.4
 ---
 * fixed: DPU won't load my organization datasets [#8]
