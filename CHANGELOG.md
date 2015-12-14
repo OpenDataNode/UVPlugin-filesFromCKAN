@@ -1,9 +1,9 @@
 E-FilesFromCKAN
 ----------
 
-v1.1.5-SNAPSHOT
+v1.1.5
 ---
-* TODO
+* fixed: CKAN resources list in DPU configuration dialog is alphabetically ordered now
 
 v1.1.4
 ---
