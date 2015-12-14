@@ -1,9 +1,11 @@
 package org.opendatanode.plugins.extractor.ckan.file;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -69,6 +71,10 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
 
     private Label catalogErrorLabel;
 
+    private Collator collator;
+
+    private static final String CONFIGURATION_LOCALE = "locale";
+
     public FilesFromCkanVaadinDialog() {
         super(FilesFromCkan.class);
     }
@@ -87,6 +93,9 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
                 additionalHttpHeaders.put(headerName, headerValue);
             }
         }
+        String localeString = env.get(CONFIGURATION_LOCALE);
+        this.collator = Collator.getInstance(Locale.forLanguageTag(localeString));
+        this.collator.setStrength(Collator.SECONDARY);
 
         setSizeFull();
         final VerticalLayout mainLayout = new VerticalLayout();
@@ -135,21 +144,21 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
         datasetResourceTree.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         datasetResourceTree.setItemCaptionPropertyId("caption");
         datasetResourceTree.addContainerProperty("caption", String.class, "");
-        
+
         // sort alphabetically asc 
         ((HierarchicalContainer) datasetResourceTree.getContainerDataSource()).setItemSorter(new ItemSorter() {
-            
+
             @Override
             public void setSortProperties(Sortable container, Object[] propertyId, boolean[] ascending) {
             }
-            
+
             @Override
             public int compare(Object itemId1, Object itemId2) {
                 if (itemId1 instanceof CkanTreeItem && itemId2 instanceof CkanTreeItem) {
-                    String i1 = ((CkanTreeItem) itemId1).toString().toLowerCase();
-                    String i2 = ((CkanTreeItem) itemId2).toString().toLowerCase();
-                    
-                    return i1.compareTo(i2);
+                    String i1 = ((CkanTreeItem) itemId1).toString();
+                    String i2 = ((CkanTreeItem) itemId2).toString();
+
+                    return collator.compare(i1, i2);
                 }
                 return 0;
             }
@@ -229,7 +238,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
                 }
             }
         });
-        
+
         expandAllButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -360,7 +369,7 @@ public class FilesFromCkanVaadinDialog extends AbstractDialog<FilesFromCkanConfi
             addPublicDatasets();
         }
         // start sorting after the tree is filled
-        ((HierarchicalContainer)datasetResourceTree.getContainerDataSource()).sort(null, null);
+        ((HierarchicalContainer) datasetResourceTree.getContainerDataSource()).sort(null, null);
     }
 
     /**
