@@ -3,7 +3,7 @@ E-FilesFromCKAN
 
 v1.1.6-SNAPSHOT
 ---
-* N/A
+* fixed: UI error caused by resources of different datasets having the same ID
 
 v1.1.5
 ---
