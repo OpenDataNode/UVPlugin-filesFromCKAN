@@ -1,7 +1,7 @@
 E-FilesFromCKAN
 ----------
 
-v1.1.6-SNAPSHOT
+v1.1.6
 ---
 * fixed: UI error caused by resources of different datasets having the same ID
 * prevented CKAN resource id to be set as pipeline metadata. This metadata caused creation of CKAN resources with the same id. 
