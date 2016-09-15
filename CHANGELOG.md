@@ -1,6 +1,10 @@
 E-FilesFromCKAN
 ----------
 
+v1.1.7-SNAPSHOT
+---
+* N/A
+
 v1.1.6
 ---
 * fixed: UI error caused by resources of different datasets having the same ID
