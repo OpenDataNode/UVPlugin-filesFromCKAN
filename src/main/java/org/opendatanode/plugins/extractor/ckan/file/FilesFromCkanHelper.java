@@ -386,6 +386,11 @@ public class FilesFromCkanHelper {
         Set<String> jsonKeys = showResourceResult.keySet();
         Map<String, String> resourceMap = new HashMap<>();
         for (String key : jsonKeys) {
+        	if (PARAM_ID.equalsIgnoreCase(key)) {
+        		// ID metadata would cause creation of resource with existing ID, so skip 
+				continue;
+			}
+        	
             if (showResourceResult.get(key).getValueType() == ValueType.STRING) {
                 resourceMap.put(key, showResourceResult.getString(key));
             }
